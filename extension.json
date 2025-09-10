@@ -1,0 +1,14 @@
+{
+    "module": "ReportesTrimestrales",
+    "name": "Reportes Trimestrales",
+    "description": "Vistas de los reportes trimestrales.",
+    "author": "Sebastian Silva",
+    "bundled": true,
+    "acceptableVersions": [
+        ">=9.1.0"
+    ],
+    "php": [
+        ">=8.2"
+    ],
+    "scripts": []
+}

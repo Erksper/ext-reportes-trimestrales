@@ -1,0 +1,42 @@
+[
+    {
+        "route": "/test-reportes",
+        "method": "get",
+        "params": {
+            "controller": "Base",
+            "action": "index"
+        }
+    },
+    {
+        "route": "/Reportes3Meses",
+        "method": "get",
+        "params": {
+            "controller": "Base",
+            "action": "index"
+        }
+    },
+    {
+        "route": "/Reportes3Meses/:action",
+        "method": "get",
+        "params": {
+            "controller": "Base",
+            "action": ":action"
+        }
+    },
+    {
+        "route": "/Reportes6Meses",
+        "method": "get", 
+        "params": {
+            "controller": "Base",
+            "action": "index"
+        }
+    },
+    {
+        "route": "/Reportes6Meses/:action",
+        "method": "get",
+        "params": {
+            "controller": "Base", 
+            "action": ":action"
+        }
+    }
+]

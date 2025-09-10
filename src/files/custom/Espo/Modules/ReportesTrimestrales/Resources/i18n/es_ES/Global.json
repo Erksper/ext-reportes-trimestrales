@@ -1,0 +1,12 @@
+{
+    "scopeNames": {
+        "Reportes3Meses": "Reportes 3 Meses",
+        "Reportes6Meses": "Reportes 6 Meses",
+        "ReportesTrimestrales": "Reportes Trimestrales"
+    },
+    "scopeNamesPlural": {
+        "Reportes3Meses": "Reportes 3 Meses", 
+        "Reportes6Meses": "Reportes 6 Meses",
+        "ReportesTrimestrales": "Reportes Trimestrales"
+    }
+}

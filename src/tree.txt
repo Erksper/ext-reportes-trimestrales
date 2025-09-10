@@ -1,0 +1,109 @@
+Listado de rutas de carpetas
+El n£mero de serie del volumen es 98EF-792C
+C:.
+|   tree.txt
+|   
++---files
+|   +---client
+|   |   \---custom
+|   |       \---modules
+|   |           \---reportes-trimestrales
+|   |               +---res
+|   |               |   \---templates
+|   |               |       |   .dummy
+|   |               |       |   
+|   |               |       +---reportes-3-meses
+|   |               |       |       list-with-buttons.tpl
+|   |               |       |       list.tpl
+|   |               |       |       opcion1.tpl
+|   |               |       |       opcion10.tpl
+|   |               |       |       opcion2.tpl
+|   |               |       |       opcion3.tpl
+|   |               |       |       opcion4.tpl
+|   |               |       |       opcion5.tpl
+|   |               |       |       opcion6.tpl
+|   |               |       |       opcion7.tpl
+|   |               |       |       opcion8.tpl
+|   |               |       |       opcion9.tpl
+|   |               |       |       report-detail.tpl
+|   |               |       |       
+|   |               |       \---reportes-6-meses
+|   |               |               opcion1.tpl
+|   |               |               opcion10.tpl
+|   |               |               opcion2.tpl
+|   |               |               opcion3.tpl
+|   |               |               opcion4.tpl
+|   |               |               opcion5.tpl
+|   |               |               opcion6.tpl
+|   |               |               opcion7.tpl
+|   |               |               opcion8.tpl
+|   |               |               opcion9.tpl
+|   |               |               
+|   |               \---src
+|   |                   \---views
+|   |                       |   .dummy
+|   |                       |   
+|   |                       +---reportes-3-meses
+|   |                       |       list-with-buttons.js
+|   |                       |       list.js
+|   |                       |       opcion1.js
+|   |                       |       opcion10.js
+|   |                       |       opcion2.js
+|   |                       |       opcion3.js
+|   |                       |       opcion4.js
+|   |                       |       opcion5.js
+|   |                       |       opcion6.js
+|   |                       |       opcion7.js
+|   |                       |       opcion8.js
+|   |                       |       opcion9.js
+|   |                       |       report-detail.js
+|   |                       |       
+|   |                       \---reportes-6-meses
+|   |                               opcion1.js
+|   |                               opcion10.js
+|   |                               opcion2.js
+|   |                               opcion3.js
+|   |                               opcion4.js
+|   |                               opcion5.js
+|   |                               opcion6.js
+|   |                               opcion7.js
+|   |                               opcion8.js
+|   |                               opcion9.js
+|   |                               
+|   \---custom
+|       \---Espo
+|           \---Modules
+|               \---ReportesTrimestrales
+|                   +---Controllers
+|                   \---Resources
+|                       |   module.json
+|                       |   
+|                       +---i18n
+|                       |   \---es_ES
+|                       |           Global.json
+|                       |           
+|                       \---metadata
+|                           |   routes.json
+|                           |   
+|                           +---app
+|                           |       client.json
+|                           |       navbar.json
+|                           |       
+|                           +---clientDefs
+|                           |       Reportes3Meses.json
+|                           |       Reportes6Meses.json
+|                           |       
+|                           +---entityDefs
+|                           |       Reportes3Meses.json
+|                           |       Reportes6Meses.json
+|                           |       ReportesTrimestrales.json
+|                           |       
+|                           \---scopes
+|                                   Reportes3Meses.json
+|                                   Reportes6Meses.json
+|                                   ReportesTrimestrales.json
+|                                   
+\---scripts
+        AfterInstall.php
+        AfterUninstall.php
+        
