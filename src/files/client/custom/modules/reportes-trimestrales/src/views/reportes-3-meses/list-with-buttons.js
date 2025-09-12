@@ -29,7 +29,8 @@ define('reportes-trimestrales:views/reportes-3-meses/list-with-buttons', ['view'
         },
         
         events: {
-            'click .report-button': 'onReportClick'
+            'click .report-button': 'onReportClick',
+            'click .back-to-reports': 'backToReports'
         },
         
         onReportClick: function (e) {
@@ -60,11 +61,6 @@ define('reportes-trimestrales:views/reportes-3-meses/list-with-buttons', ['view'
             this.$el.find('.report-detail-container').html(iframeHtml);
             this.$el.find('.report-buttons-container').hide();
             this.$el.find('.report-detail-container').show();
-        },
-        
-        events: {
-            'click .report-button': 'onReportClick',
-            'click .back-to-reports': 'backToReports'
         },
         
         backToReports: function() {
