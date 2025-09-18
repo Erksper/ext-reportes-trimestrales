@@ -16,7 +16,7 @@ define('reportes-trimestrales:views/reportes-6-meses/list-with-buttons', ['view'
                 {id: 'CLALlanoAndes2t', label: 'CLA Llanos Andes', icon: 'fas fa-map-marker'},
                 {id: 'CLAOrienteInsular2t', label: 'CLA Oriente Insular', icon: 'fas fa-map-marker'},
                 {id: 'CLAOrienteNorte2t', label: 'CLA Oriente Norte', icon: 'fas fa-map-marker'},
-                {id: 'CLAorienteSur2t', label: 'CLA Oriente Sur', icon: 'fas fa-map-marker'},
+                {id: 'CLAOrienteSur2t', label: 'CLA Oriente Sur', icon: 'fas fa-map-marker'},
                 {id: 'CLAZulia2t', label: 'CLA Zulia', icon: 'fas fa-map-marker'}
             ];
         },
