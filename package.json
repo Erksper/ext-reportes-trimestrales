@@ -1,6 +1,6 @@
 {
   "name": "espocrm-ext-reportes-trimestrales",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "",
   "scripts": {
     "sa": "node build --copy && node build --composer-install && php site/vendor/bin/phpstan",

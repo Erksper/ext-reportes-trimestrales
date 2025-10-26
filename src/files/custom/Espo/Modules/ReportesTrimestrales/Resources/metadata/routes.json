@@ -38,5 +38,21 @@
             "controller": "Base", 
             "action": ":action"
         }
+    },
+        {
+        "route": "/Reportes9Meses",
+        "method": "get", 
+        "params": {
+            "controller": "Base",
+            "action": "index"
+        }
+    },
+    {
+        "route": "/Reportes9Meses/:action",
+        "method": "get",
+        "params": {
+            "controller": "Base", 
+            "action": ":action"
+        }
     }
 ]
