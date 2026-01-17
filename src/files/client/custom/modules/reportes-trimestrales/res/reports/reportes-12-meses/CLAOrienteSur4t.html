@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis del Mercado Inmobiliario CENTURY 21</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Carga de Fuente Montserrat desde Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Definiciones de color basadas en las especificaciones del PDF */
+        :root {
+            --bg-color: #F8F5F2;
+            --primary-color: #3D405B;
+            /* Colores de Operación */
+            --alquiler-color: #ACA68B;
+            --venta-color: #000000; 
+            /* Colores de Años */
+            --year-2023: #B3B3B3;
+            --year-2024: #A38600;
+            --year-2025-active: #ADAD86;
+        }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+        }
+        .text-primary { color: var(--primary-color); }
+        .bg-primary { background-color: var(--primary-color); }
+
+        /* Clases auxiliares para colores de Operación */
+        .bg-alquiler { background-color: var(--alquiler-color); }
+        .text-alquiler { color: var(--alquiler-color); }
+        .bg-venta { background-color: var(--venta-color); }
+        .text-venta { color: var(--venta-color); }
+
+        /* Clases auxiliares para colores de Año y Botón Activo (2025) */
+        .bg-2023 { background-color: var(--year-2023); }
+        .bg-2024 { background-color: var(--year-2024); }
+        .bg-2025 { background-color: var(--year-2025-active); }
+        .border-2025 { border-color: var(--year-2025-active); }
+
+        .btn-filter {
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-filter:not(.active):hover {
+            opacity: 0.8;
+        }
+        .chart-container {
+            position: relative;
+            height: 320px;
+            max-height: 320px;
+            width: 100%;
+        }
+        /* Ajuste para asegurar que el texto en botones negros sea blanco */
+        .operacion-filter[data-value="venta"].active {
+            color: white !important;
+            background-color: var(--year-2025-active) !important; /* El botón activo usa el color 2025 */
+        }
+        /* Ajuste de color para los botones de operación en estado inactivo */
+        .operacion-filter:not(.active) {
+            color: var(--primary-color);
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Sección del Encabezado -->
+    <header class="text-center mb-8 border-b-2 border-primary pb-4">
+        <h1 class="text-3xl md:text-5xl font-extrabold text-primary mb-2 cursor-pointer" contenteditable="true">Análisis del Mercado Inmobiliario</h1>
+        <h2 class="text-lg md:text-xl font-semibold text-primary">Periodo Enero-Diciembre 2023-2025</h2>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <div class="container mx-auto max-w-7xl">
+
+        <!-- Sección de Resumen del Mercado -->
+        <section id="resumen-mercado" class="mb-12 bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl md:text-2xl font-bold text-center mb-6 text-primary">CLA Oriente Sur</h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <div class="flex flex-col">
+                    <!-- Gráfico 1: Evolución del Volumen de Operaciones -->
+                    <h4 class="text-lg font-semibold text-center mb-4 text-primary">Evolución del Volumen de Operaciones (Lados)</h4>
+                    <div id="chart1-container" class="chart-container mx-auto max-w-xl p-2">
+                        <canvas id="chart1"></canvas>
+                    </div>
+                    <!-- Texto de Análisis para Gráfico 1 -->
+                    <p id="analysis-chart1" class="mt-4 text-center text-sm italic text-gray-600 font-medium"></p>
+                </div>
+                
+                <div class="flex flex-col">
+                    <!-- Gráfico 2: Mix de Operaciones -->
+                    <h4 class="text-lg font-semibold text-center mb-4 text-primary">Mix de Operaciones (Periodo Enero-Diciembre 2025)</h4>
+                    <div id="chart2-container" class="chart-container mx-auto max-w-sm p-2">
+                        <canvas id="chart2"></canvas>
+                    </div>
+                    <!-- Texto de Análisis para Gráfico 2 -->
+                    <p id="analysis-chart2" class="mt-4 text-center text-sm italic text-gray-600 font-medium"></p>
+                </div>
+
+            </div>
+        </section>
+        
+        <!-- Sección del Explorador de Mercado Detallado -->
+        <section id="explorador-mercado" class="bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl md:text-2xl font-bold text-center mb-6 text-primary">Explorador de Mercado Detallado</h3>
+
+            <!-- Filtros Interactivos -->
+            <div id="filters" class="flex flex-col space-y-6 mb-8">
+                
+                <!-- Filtro Tipo de Operación -->
+                <div class="flex flex-col items-center">
+                    <span class="font-semibold mb-2 text-primary">Tipo de Operación:</span>
+                    <div id="filter-operacion" class="flex space-x-4 p-1 rounded-full bg-gray-100 shadow-inner">
+                        <!-- Botones de Operación -->
+                        <button data-value="alquiler" class="btn-filter operacion-filter active px-4 py-2 rounded-full text-sm font-semibold bg-2025 text-white shadow-md">Alquiler</button>
+                        <button data-value="venta" class="btn-filter operacion-filter px-4 py-2 rounded-full text-sm font-semibold text-primary hover:bg-gray-200">Venta</button>
+                    </div>
+                </div>
+
+                <!-- Filtro Tipo de Propiedad -->
+                <div class="flex flex-col items-center">
+                    <span class="font-semibold mb-2 text-primary">Tipo de Propiedad:</span>
+                    <div id="filter-propiedad" class="flex flex-wrap justify-center gap-2 p-1 rounded-full bg-gray-100 shadow-inner">
+                        <button data-value="apartamento" class="btn-filter propiedad-filter active px-4 py-2 rounded-full text-sm font-semibold bg-2025 text-white shadow-md">Apartamento</button>
+                        <button data-value="casa" class="btn-filter propiedad-filter px-4 py-2 rounded-full text-sm font-semibold text-primary hover:bg-gray-200">Casa</button>
+                        <button data-value="local" class="btn-filter propiedad-filter px-4 py-2 rounded-full text-sm font-semibold text-primary hover:bg-gray-200">Local</button>
+                        <button data-value="oficina" class="btn-filter propiedad-filter px-4 py-2 rounded-full text-sm font-semibold text-primary hover:bg-gray-200">Oficina</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjetas de Métricas Clave -->
+            <div id="metric-cards" class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+                <!-- Tarjeta Precio Promedio -->
+                <div class="metric-card p-4 rounded-xl shadow-lg border-b-4 border-2025 transition duration-300 hover:shadow-xl bg-gray-50 text-center">
+                    <p class="text-xs font-medium text-gray-500 uppercase">Precio Promedio (USD)</p>
+                    <p id="card-precio-value" class="text-3xl font-bold mt-1 text-primary">$3,000.00</p>
+                    <p id="card-precio-change" class="text-sm font-semibold mt-1 text-green-600">▲ 10.5% vs Qtr '24</p>
+                </div>
+                <!-- Tarjeta Precio Promedio / m² -->
+                <div class="metric-card p-4 rounded-xl shadow-lg border-b-4 border-2025 transition duration-300 hover:shadow-xl bg-gray-50 text-center">
+                    <p class="text-xs font-medium text-gray-500 uppercase">Precio Promedio / m² (USD)</p>
+                    <p id="card-precio_m2-value" class="text-3xl font-bold mt-1 text-primary">$3.00</p>
+                    <p id="card-precio_m2-change" class="text-sm font-semibold mt-1 text-green-600">▲ 5.5% vs Qtr '24</p>
+                </div>
+                <!-- Tarjeta Promedio m² -->
+                <div class="metric-card p-4 rounded-xl shadow-lg border-b-4 border-2025 transition duration-300 hover:shadow-xl bg-gray-50 text-center">
+                    <p class="text-xs font-medium text-gray-500 uppercase">Promedio (m²)</p>
+                    <p id="card-tamano-value" class="text-3xl font-bold mt-1 text-primary">85 m²</p>
+                    <p id="card-tamano-change" class="text-sm font-semibold mt-1 text-green-600">▲ 2.5% vs Qtr '24</p>
+                </div>
+            </div>
+
+            <!-- Gráfico 3: Evolución de Métricas Clave -->
+            <div class="flex flex-col mb-12">
+                <h4 class="text-lg font-semibold text-center mb-4 text-primary">Evolución de Métricas Clave (Enero-Diciembre 2023-2025)</h4>
+                
+                <!-- Filtro de Métrica para Gráfico 3 -->
+                <div id="filter-metrica" class="flex flex-wrap justify-center gap-2 p-1 rounded-full bg-gray-100 shadow-inner mb-4 max-w-fit mx-auto">
+                    <button data-value="precio" class="btn-filter metrica-filter px-4 py-2 rounded-full text-sm font-semibold text-primary hover:bg-gray-200">Precio Promedio</button>
+                    <button data-value="precio_m2" class="btn-filter metrica-filter active px-4 py-2 rounded-full text-sm font-semibold bg-2025 text-white shadow-md">Precio Promedio / m²</button>
+                    <button data-value="tamano" class="btn-filter metrica-filter px-4 py-2 rounded-full text-sm font-semibold text-primary hover:bg-gray-200">Promedio m²</button>
+                </div>
+
+                <div id="chart3-container" class="chart-container mx-auto max-w-3xl p-2">
+                    <canvas id="chart3"></canvas>
+                </div>
+                <!-- Texto de Análisis para Gráfico 3 -->
+                <p id="analysis-chart3" class="mt-4 text-center text-sm italic text-gray-600 font-medium"></p>
+            </div>
+
+            <!-- Gráfico 4: Distribución de Operaciones por Rango de Precio -->
+            <div class="flex flex-col mb-4">
+                <h4 class="text-lg font-semibold text-center mb-4 text-primary">Distribución de Operaciones por Rango de Precio (Lados)</h4>
+                <div id="chart4-container" class="chart-container mx-auto max-w-3xl p-2 h-[450px] max-h-[450px]">
+                    <canvas id="chart4"></canvas>
+                </div>
+                <!-- Texto de Análisis para Gráfico 4 -->
+                <p id="analysis-chart4" class="mt-4 text-center text-sm italic text-gray-600 font-medium"></p>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // --- DATASET (MANTENIENDO LOS DATOS PREVIOS) ---
+        const data = {
+            general: {
+                lados: {
+                    alquiler: [263, 172, 211], // Datos del PDF: Qtr 2023, 2024, 2025
+                    venta: [354, 236, 178]    // Datos del PDF: Qtr 2023, 2024, 2025
+                }
+            },
+            alquiler: {
+                // ... (Datos de Alquiler)
+                apartamento: {
+                    metrics: { precio: [224.13, 304.38, 253.86], precio_m2: [2.90, 3.83, 3.20], tamano: [77.30, 79.55, 79.28] },
+                    ranges: { labels: ['< 100', '100-250', '250-500', '500-1000', '> 1000'], values: [ [13, 56, 16, 3, 0], [6, 27, 16, 7, 0], [3, 23, 25, 0, 0] ] }
+                },
+                casa: {
+                    metrics: { precio: [254.17, 196.67, 195.00], precio_m2: [1.38, 1.90, 1.44], tamano: [183.67, 103.73, 135.63] },
+                    ranges: { labels: ['< 100', '100-250', '250-500', '500-1000', '> 1000'], values: [ [21, 32, 14, 2, 1], [4, 26, 11, 0, 0], [2, 36, 6, 2, 0] ] }
+                },
+                local: {
+                    metrics: { precio: [358.19, 374.76, 536.50], precio_m2: [2.92, 2.76, 2.54], tamano: [122.75, 135.78, 211.37] },
+                    ranges: { labels: ['< 100', '100-250', '250-500', '500-1000', '1000-2500'], values: [ [8, 23, 14, 17, 0], [3, 20, 11, 7, 2], [10, 43, 9, 0, 4] ] }
+                },
+                oficina: {
+                    metrics: { precio: [266.44, 175.00, 180.00], precio_m2: [3.85, 6.14, 3.75], tamano: [69.15, 28.50, 47.98] },
+                    ranges: { labels: ['< 100', '100-250', '250-500', '500-1000', '> 1000'], values: [ [2, 9, 3, 2, 0], [0, 4, 0, 0, 0], [14, 17, 1, 0, 0] ] }
+                }
+            },
+            venta: {
+                // ... (Datos de Venta)
+                apartamento: {
+                    metrics: { precio: [15073.12, 16786.06, 19244.00], precio_m2: [165.67, 189.38, 215.42], tamano: [90.98, 88.64, 89.33] },
+                    ranges: { labels: ['< 5k', '5k-10k', '10k-25k', '25k-50k', '50k-100k', '> 100k'], values: [ [8, 42, 73, 12, 2, 1], [0, 9, 56, 3, 2, 0], [0, 6, 32, 13, 2, 0] ] }
+                },
+                casa: {
+                    metrics: { precio: [15872.84, 17181.34, 27335.90], precio_m2: [89.37, 108.75, 123.49], tamano: [177.61, 157.99, 221.36] },
+                    ranges: { labels: ['< 5k', '5k-10k', '10k-25k', '25k-50k', '50k-100k', '> 100k'], values: [ [25, 47, 71, 19, 6, 0], [7, 47, 86, 17, 1, 0], [5, 8, 42, 20, 8, 3] ] }
+                },
+                local: {
+                    metrics: { precio: [22828.57, 16500.00, 25914.29], precio_m2: [325.13, 265.06, 87.35], tamano: [70.21, 62.25, 296.67] },
+                    ranges: { labels: ['< 5k', '5k-10k', '10k-25k', '25k-50k', '50k-100k', '> 100k'], values: [ [2, 2, 4, 2, 2, 0], [0, 3, 1, 2, 0, 0], [2, 5, 4, 1, 2, 0] ] }
+                },
+                oficina: {
+                    metrics: { precio: [0, 7500.00, 32500.00], precio_m2: [0, 318.20, 560.34], tamano: [0, 23.57, 58.00] },
+                    ranges: { labels: ['< 5k', '5k-10k', '10k-25k', '25k-50k', '50k-100k', '> 100k'], values: [ [0, 0, 0, 0, 0, 0], [2, 0, 1, 0, 0, 0], [0, 0, 0, 2, 0, 0] ] }
+                }
+            }
+        };
+
+        // --- GLOBAL VARIABLES & UTILITIES ---
+        let chart1, chart2, chart3, chart4;
+        let activeOperacion = 'alquiler';
+        let activePropiedad = 'apartamento';
+        let activeMetrica = 'precio_m2';
+        
+        // ** USO DIRECTO DE VALORES HEXADECIMALES EN JS PARA CHART.JS **
+        const colors = {
+            alquiler: '#ACA68B', // PDF: Alquiler
+            venta: '#000000',    // PDF: Venta (Negro)
+            year2023: '#B3B3B3', // PDF: 2023
+            year2024: '#A38600', // PDF: 2024
+            year2025: '#ADAD86'  // PDF: 2025 / Activo
+        };
+
+        // Formato para números
+        const formatCurrency = (value) => {
+            if (value === null || isNaN(value)) return '$ -';
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: value >= 1000 ? 0 : 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        };
+
+        const formatNumber = (value, unit = '') => {
+            if (value === null || isNaN(value)) return ' -';
+            return `${new Intl.NumberFormat('es-VE', { maximumFractionDigits: 2 }).format(value)}${unit}`;
+        };
+
+        // Lógica de cálculo de porcentaje con manejo de casos borde.
+        const calculatePercentageChange = (current, previous) => {
+            current = parseFloat(current);
+            previous = parseFloat(previous);
+
+            if (isNaN(current) || isNaN(previous) || previous === 0 || previous === null || previous === undefined || current === null || current === undefined) {
+                return { text: '', color: 'text-gray-500' };
+            }
+
+            const diff = current - previous;
+            const percentage = (diff / previous) * 100;
+            const formattedPercentage = Math.abs(percentage).toFixed(1);
+            const direction = diff > 0 ? '▲' : (diff < 0 ? '▼' : '▬');
+            const color = diff > 0 ? 'text-green-600' : (diff < 0 ? 'text-red-600' : 'text-gray-500');
+
+            return { text: `${direction} ${formattedPercentage}% vs Qtr '24`, color };
+        };
+
+        // --- CHART INITIALIZATION ---
+        const initCharts = () => {
+            Chart.defaults.font.family = 'Montserrat';
+            Chart.defaults.plugins.legend.labels.usePointStyle = true;
+            
+            // 1. Gráfico de Evolución del Volumen (Barras)
+            const ctx1 = document.getElementById('chart1').getContext('2d');
+            chart1 = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['2023', '2024', '2025'],
+                    datasets: [] // Se llena en updateMarketSummary
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Nº de Operaciones'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { callbacks: { label: (context) => `${context.dataset.label}: ${context.raw} lados` } }
+                    }
+                }
+            });
+
+            // 2. Gráfico de Mix de Operaciones (Donut)
+            const ctx2 = document.getElementById('chart2').getContext('2d');
+            chart2 = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Alquiler', 'Venta'],
+                    datasets: [{
+                        data: [], // Se llena en updateMarketSummary
+                        backgroundColor: [colors.alquiler, colors.venta],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { callbacks: { label: (context) => `${context.label}: ${context.raw} lados (${context.formattedValue})` } }
+                    }
+                }
+            });
+            
+            // 3. Gráfico de Evolución de Métricas Clave (Barras)
+            const ctx3 = document.getElementById('chart3').getContext('2d');
+            chart3 = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: ['2023', '2024', '2025'],
+                    datasets: [{
+                        label: 'Métrica',
+                        data: [],
+                        // Colores de año específicos aplicados directamente
+                        backgroundColor: [colors.year2023, colors.year2024, colors.year2025],
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 4. Gráfico de Distribución por Rango de Precio (Barras Agrupadas)
+            const ctx4 = document.getElementById('chart4').getContext('2d');
+            chart4 = new Chart(ctx4, {
+                type: 'bar',
+                data: {
+                    labels: [], // Se llena dinámicamente
+                    datasets: [
+                        // Colores de año específicos aplicados directamente
+                        { label: '2023', data: [], backgroundColor: colors.year2023 },
+                        { label: '2024', data: [], backgroundColor: colors.year2024 },
+                        { label: '2025', data: [], backgroundColor: colors.year2025 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: false },
+                        y: { stacked: false, beginAtZero: true, title: { display: true, text: 'Nº de Operaciones (Lados)' } }
+                    },
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        };
+
+        // --- MARKET SUMMARY LOGIC (Section 1) ---
+        const updateMarketSummary = () => {
+            const alquilerLados = data.general.lados.alquiler;
+            const ventaLados = data.general.lados.venta;
+            
+            const total2024 = alquilerLados[1] + ventaLados[1];
+            const total2025 = alquilerLados[2] + ventaLados[2];
+            
+            const changeTotal = calculatePercentageChange(total2025, total2024);
+            const changeAlquiler = calculatePercentageChange(alquilerLados[2], alquilerLados[1]);
+            const changeVenta = calculatePercentageChange(ventaLados[2], ventaLados[1]);
+
+            // Update Chart 1: Evolución del Volumen
+            // ** APLICACIÓN DIRECTA DE HEXADECIMALES **
+            chart1.data.datasets = [
+                {
+                    label: 'Alquiler',
+                    data: alquilerLados,
+                    backgroundColor: colors.alquiler,
+                    borderRadius: 5
+                },
+                {
+                    label: 'Venta',
+                    data: ventaLados,
+                    backgroundColor: colors.venta, // #000000
+                    borderRadius: 5
+                }
+            ];
+            chart1.update();
+
+            // Update Text Analysis 1
+            document.getElementById('analysis-chart1').innerHTML = `El volumen total de operaciones en 2025 fue de **${total2025} lados**.
+                Representa una ${changeTotal.text.includes('▲') ? 'expansión' : 'contracción'} ${changeTotal.text}.
+                El segmento de Alquiler (${alquilerLados[2]} lados) ${changeAlquiler.text.includes('▲') ? 'creció' : 'se contrajo'} ${changeAlquiler.text},
+                mientras que Venta (${ventaLados[2]} lados) ${changeVenta.text.includes('▲') ? 'creció' : 'se contrajo'} ${changeVenta.text} en el mismo periodo.`;
+
+            // Update Chart 2: Mix de Operaciones 2025
+            // ** APLICACIÓN DIRECTA DE HEXADECIMALES **
+            chart2.data.datasets[0].data = [alquilerLados[2], ventaLados[2]];
+            chart2.data.datasets[0].backgroundColor = [colors.alquiler, colors.venta];
+            chart2.update();
+
+            // Update Text Analysis 2
+            const mixAlquiler = ((alquilerLados[2] / total2025) * 100).toFixed(1);
+            const mixVenta = ((ventaLados[2] / total2025) * 100).toFixed(1);
+            const tipoDominante = mixAlquiler > mixVenta ? 'Alquiler' : 'Venta';
+
+            document.getElementById('analysis-chart2').innerHTML = `En el Periodo Enero-Diciembre 2025, las operaciones de **${tipoDominante}** dominaron el mercado, representando el **${mixVenta > mixAlquiler ? mixVenta : mixAlquiler}%** del total (Alquiler: ${mixAlquiler}%, Venta: ${mixVenta}%). Esto subraya la concentración de actividad en ${mixVenta > mixAlquiler ? 'adquisiciones' : 'arriendos'}.`;
+        };
+        
+        // --- DETAILED EXPLORER LOGIC (Section 2) ---
+
+        const updateMetricCards = (currentData) => {
+            const metrics = currentData.metrics;
+            const cardMap = {
+                precio: { unit: '', format: formatCurrency },
+                precio_m2: { unit: '', format: formatCurrency },
+                tamano: { unit: ' m²', format: formatNumber }
+            };
+
+            for (const key in cardMap) {
+                const current = metrics[key][2]; // 2025 (Index 2)
+                const previous = metrics[key][1]; // 2024 (Index 1)
+                const { text: changeText, color } = calculatePercentageChange(current, previous);
+                
+                const formattedValue = cardMap[key].format(current) + cardMap[key].unit;
+                
+                document.getElementById(`card-${key}-value`).textContent = formattedValue;
+                
+                const changeElement = document.getElementById(`card-${key}-change`);
+                changeElement.textContent = changeText.includes('%') ? changeText : formattedValue;
+                changeElement.className = `text-sm font-semibold mt-1 ${color}`;
+
+                // Si no hay porcentaje significativo, solo mostrar el valor sin el texto 'vs Qtr '24'
+                if (!changeText.includes('%')) {
+                    changeElement.textContent = isNaN(current) || current === 0 ? 'Sin dato previo' : `Valor 2025: ${formattedValue}`;
+                }
+            }
+        };
+
+        const updateChart3 = (currentData) => {
+            const metrics = currentData.metrics;
+            const currentMetricData = metrics[activeMetrica];
+            const currentMetricLabel = document.querySelector(`#filter-metrica button.active`).textContent;
+
+            // Update Chart 3: Evolución de Métricas Clave
+            chart3.data.datasets[0].data = currentMetricData;
+            chart3.data.datasets[0].label = currentMetricLabel;
+            
+            // Set Y-axis title and tooltip format based on the selected metric
+            const isCurrency = activeMetrica.includes('precio');
+            const unit = activeMetrica === 'tamano' ? ' m²' : '';
+
+            // ** APLICACIÓN DIRECTA DE HEXADECIMALES **
+            chart3.data.datasets[0].backgroundColor = [colors.year2023, colors.year2024, colors.year2025];
+
+            chart3.options.scales.y.title.text = `${currentMetricLabel} (${isCurrency ? 'USD' : unit.trim()})`;
+            chart3.options.plugins.tooltip.callbacks = {
+                label: (context) => {
+                    const value = context.raw;
+                    return `${context.dataset.label}: ${isCurrency ? formatCurrency(value) : formatNumber(value)}${unit}`;
+                }
+            };
+            
+            chart3.update();
+
+            // Update Text Analysis 3
+            const current = currentMetricData[2]; // 2025
+            const previous = currentMetricData[1]; // 2024
+            const initial = currentMetricData[0]; // 2023
+            const { text: changeText2425 } = calculatePercentageChange(current, previous);
+            const { text: changeText2325 } = calculatePercentageChange(current, initial);
+
+            let analysisText = `La métrica **${currentMetricLabel}** para ${activeOperacion} de ${activePropiedad} en 2025 fue de **${isCurrency ? formatCurrency(current) : formatNumber(current)}${unit}**.`;
+            analysisText += ` Esto representa un cambio ${changeText2425.includes('▲') ? 'ascendente' : 'descendente'} ${changeText2425} respecto a 2024.`;
+            analysisText += ` Comparado con 2023, la variación total es ${changeText2325}.`;
+            
+            document.getElementById('analysis-chart3').innerHTML = analysisText;
+        };
+
+        const updateChart4 = (currentData) => {
+            const ranges = currentData.ranges;
+            
+            // Update Chart 4: Distribución de Operaciones
+            chart4.data.labels = ranges.labels;
+            
+            const data2023 = ranges.values[0];
+            const data2024 = ranges.values[1];
+            const data2025 = ranges.values[2];
+            
+            // ** APLICACIÓN DIRECTA DE HEXADECIMALES **
+            chart4.data.datasets[0].data = data2023; 
+            chart4.data.datasets[1].data = data2024; 
+            chart4.data.datasets[2].data = data2025;
+            chart4.data.datasets[0].backgroundColor = colors.year2023; // 2023
+            chart4.data.datasets[1].backgroundColor = colors.year2024; // 2024
+            chart4.data.datasets[2].backgroundColor = colors.year2025; // 2025
+            
+            chart4.update();
+
+            // Update Text Analysis 4
+            let max2025 = 0;
+            let max2025Index = -1;
+            data2025.forEach((value, index) => {
+                if (value > max2025) {
+                    max2025 = value;
+                    max2025Index = index;
+                }
+            });
+            
+            let analysisText = `En 2025, el rango de precio más activo para ${activeOperacion} de ${activePropiedad} es **${ranges.labels[max2025Index]}** con **${max2025} lados**.`;
+
+            if (max2025Index !== -1) {
+                const prev2024 = data2024[max2025Index];
+                const { text: changeText } = calculatePercentageChange(max2025, prev2024);
+                
+                if (changeText.includes('%')) {
+                    analysisText += ` Esto indica una variación ${changeText} en el rango dominante respecto a 2024.`;
+                } else {
+                    analysisText += ` No hay una variación porcentual significativa respecto a 2024.`;
+                }
+            } else {
+                analysisText += ` No se encontraron operaciones significativas en 2025 para este tipo de propiedad.`;
+            }
+            
+            document.getElementById('analysis-chart4').innerHTML = analysisText;
+        };
+
+        // --- DETAILED EXPLORER LOGIC (Section 2) ---
+
+        const updateDetailedExplorer = () => {
+            const currentData = data[activeOperacion][activePropiedad];
+            
+            if (!currentData) {
+                console.error(`No data found for ${activeOperacion} / ${activePropiedad}`);
+                return;
+            }
+
+            updateMetricCards(currentData);
+            updateChart3(currentData);
+            updateChart4(currentData);
+        };
+
+        // --- EVENT LISTENERS SETUP ---
+        const setupEventListeners = () => {
+            // Filter Operation and Property
+            document.querySelectorAll('.operacion-filter').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    document.querySelectorAll('.operacion-filter').forEach(btn => {
+                        // 1. Limpiar estado activo y de color
+                        btn.classList.remove('active', 'bg-2025', 'text-white');
+                        // 2. Aplicar estilo inactivo
+                        btn.classList.add('text-primary', 'hover:bg-gray-200');
+                    });
+                    
+                    activeOperacion = e.target.getAttribute('data-value');
+                    
+                    // 3. Aplicar estilo activo (color 2025)
+                    e.target.classList.add('active', 'bg-2025', 'shadow-md', 'text-white');
+                    e.target.classList.remove('text-primary', 'hover:bg-gray-200');
+                    
+                    // Asegurar que el Gráfico 1 y 2 se actualicen correctamente con los colores de Operación
+                    updateMarketSummary();
+                    updateDetailedExplorer();
+                });
+            });
+
+            document.querySelectorAll('.propiedad-filter').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    document.querySelectorAll('.propiedad-filter').forEach(btn => {
+                        btn.classList.remove('active', 'bg-2025', 'text-white');
+                        btn.classList.add('text-primary', 'hover:bg-gray-200');
+                    });
+                    e.target.classList.add('active', 'bg-2025', 'text-white');
+                    e.target.classList.remove('text-primary', 'hover:bg-gray-200');
+                    
+                    activePropiedad = e.target.getAttribute('data-value');
+                    updateDetailedExplorer();
+                });
+            });
+
+            // Filter Metric for Chart 3
+            document.querySelectorAll('.metrica-filter').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    document.querySelectorAll('.metrica-filter').forEach(btn => {
+                        btn.classList.remove('active', 'bg-2025', 'text-white');
+                        btn.classList.add('text-primary', 'hover:bg-gray-200');
+                    });
+                    e.target.classList.add('active', 'bg-2025', 'text-white');
+                    e.target.classList.remove('text-primary', 'hover:bg-gray-200');
+                    
+                    activeMetrica = e.target.getAttribute('data-value');
+                    updateDetailedExplorer();
+                });
+            });
+        };
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            initCharts();
+            setupEventListeners();
+            
+            // Llamadas iniciales para configurar el estado por defecto y asegurar que los colores se apliquen.
+            document.querySelector('.operacion-filter[data-value="alquiler"]').click();
+            document.querySelector('.propiedad-filter[data-value="apartamento"]').click();
+            document.querySelector('.metrica-filter[data-value="precio_m2"]').click();
+        };
+
+    </script>
+</body>
+</html>

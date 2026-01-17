@@ -54,5 +54,21 @@
             "controller": "Base", 
             "action": ":action"
         }
+    },
+        {
+        "route": "/Reportes12Meses",
+        "method": "get", 
+        "params": {
+            "controller": "Base",
+            "action": "index"
+        }
+    },
+    {
+        "route": "/Reportes12Meses/:action",
+        "method": "get",
+        "params": {
+            "controller": "Base", 
+            "action": ":action"
+        }
     }
 ]
