@@ -70,5 +70,37 @@
             "controller": "Base", 
             "action": ":action"
         }
+    },
+        {
+        "route": "/Reportes3Meses2026",
+        "method": "get", 
+        "params": {
+            "controller": "Base",
+            "action": "index"
+        }
+    },
+    {
+        "route": "/Reportes3Meses2026/:action",
+        "method": "get",
+        "params": {
+            "controller": "Base", 
+            "action": ":action"
+        }
+    },
+    {
+        "route": "/ReportesLatam",
+        "method": "get",
+        "params": {
+            "controller": "Base",
+            "action": "index"
+        }
+    },
+    {
+        "route": "/ReportesLatam/:action",
+        "method": "get",
+        "params": {
+            "controller": "Base",
+            "action": ":action"
+        }
     }
 ]

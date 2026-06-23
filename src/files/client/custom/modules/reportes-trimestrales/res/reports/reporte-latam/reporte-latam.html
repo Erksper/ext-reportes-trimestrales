@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Inmobiliario Century 21 LATAM</title>
+    
+    <!-- Tailwind CSS (Funciona perfectamente local) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fuentes (Playfair Display para títulos estilo C21 y Roboto para cuerpo) -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap');
+        
+        body { font-family: 'Roboto', sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-[#F5F5F5] text-[#212121] selection:bg-[#BEAF87] selection:text-white">
+
+    <div id="app" class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-[#212121] shadow-xl sticky top-0 z-20 border-b-4 border-[#BEAF87]">
+            <div class="max-w-7xl mx-auto px-4 lg:px-8 py-4">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    
+                    <!-- Logo -->
+                    <div class="flex items-center gap-4">
+                        <div class="bg-[#BEAF87] p-1.5 shadow-md">
+                            <svg viewBox="0 0 100 100" class="w-10 h-10 fill-[#212121]" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="10" y="10" width="80" height="80" fill="none" stroke="#212121" strokeWidth="8"/>
+                                <text x="50" y="65" fontSize="40" textAnchor="middle" fontWeight="900" fontFamily="serif">C21</text>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-black tracking-tighter text-white uppercase" style="font-family: serif;">CENTURY 21</h1>
+                            <p class="text-[#BEAF87] text-[10px] tracking-[0.3em] uppercase leading-none mt-1">Venezuela</p>
+                        </div>
+                    </div>
+
+                    <!-- Nav Buttons (Nativo) -->
+                    <nav class="flex bg-[#333] p-1 rounded-sm">
+                        <button onclick="switchTab('overview')" id="btn-overview" class="nav-btn px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all rounded-sm bg-[#BEAF87] text-[#212121] shadow-md">
+                            Panorama
+                        </button>
+                        <button onclick="switchTab('compare')" id="btn-compare" class="nav-btn px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all rounded-sm text-gray-400 hover:text-white">
+                            Comparativa
+                        </button>
+                        <button onclick="switchTab('definitions')" id="btn-definitions" class="nav-btn px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all rounded-sm text-gray-400 hover:text-white">
+                            Criterios
+                        </button>
+                    </nav>
+
+                    <!-- User Profile -->
+                    <div class="flex items-center gap-3 pl-4 md:border-l border-gray-700">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-[#BEAF87] text-xs font-bold uppercase tracking-wider">Wilmer Saballo</p>
+                            <p class="text-gray-400 text-[10px] uppercase tracking-wide">Director Regional</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-[#BEAF87] flex items-center justify-center text-[#212121] shadow-inner">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" class="w-5 h-5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Container -->
+        <main class="max-w-7xl mx-auto px-4 lg:px-8 py-10" id="main-content">
+            <!-- El contenido dinámico se inyectará aquí -->
+        </main>
+    </div>
+
+    <!-- Lógica de control nativa libre de bloqueos de navegador -->
+    <script>
+        // Datos integrales del informe
+        const data = {
+            cities: [
+                { id: 'cdmx', name: 'Ciudad de México', flag: '🇲🇽', mediaNewMin: 2600, mediaNewMax: 3100, mediaUsedMin: 2000, mediaUsedMax: 2300, altaNewMin: 2900, altaNewMax: 3400, altaUsedMin: 2200, altaUsedMax: 2600, c1: 'Ronda 51.966 MXN/m². Algo más alto en colonias bien ubicadas.', c2: 'Mercado secundario ~42.140 MXN/m².', c3: 'Colonias como Roma, Condesa, Del Valle. Por debajo de Polanco.', c4: 'Vivienda usada subió más en 2025.' },
+                { id: 'bog', name: 'Bogotá', flag: '🇨🇴', mediaNewMin: 1100, mediaNewMax: 1600, mediaUsedMin: 900, mediaUsedMax: 1300, altaNewMin: 1600, altaNewMax: 2100, altaUsedMin: 1300, altaUsedMax: 1800, c1: 'Estratos 3-4. 4-8 millones COP/m².', c2: 'Barrios como Teusaquillo, Cedritos. Descuento vs nuevo.', c3: 'Estrato 5. 5.4-6 millones COP/m². Premium se dispara a estrato 6.', c4: 'Chapinero, Usaquén. 6.5-9 millones COP/m².' },
+                { id: 'bue', name: 'Buenos Aires', flag: '🇦🇷', mediaNewMin: 2000, mediaNewMax: 2400, mediaUsedMin: 1700, mediaUsedMax: 2100, altaNewMin: 2700, altaNewMax: 3400, altaUsedMin: 2300, altaUsedMax: 2900, c1: 'CABA promedio. Deptos estándar sin amenities.', c2: 'Barrios fuera del top (Palermo/Recoleta) bajan algo.', c3: 'Palermo, Núñez, Belgrano. Proyectos bien ubicados van al tope.', c4: 'Mantiene valores altos para la región.' },
+                { id: 'scl', name: 'Santiago', flag: '🇨🇱', mediaNewMin: 2000, mediaNewMax: 2500, mediaUsedMin: 1700, mediaUsedMax: 2200, altaNewMin: 3500, altaNewMax: 4500, altaUsedMin: 3000, altaUsedMax: 4000, c1: '50-80 UF/m². La Florida, La Cisterna.', c2: 'Usados tienden a algo menos que las 60-72 UF/m² de nuevos.', c3: 'Zonas premium oriente (Las Condes, Providencia). ~117-124 UF/m².', c4: 'Descuento relevante en deptos de 10-20 años.' },
+                { id: 'mvd', name: 'Montevideo', flag: '🇺🇾', mediaNewMin: 2200, mediaNewMax: 2600, mediaUsedMin: 1800, mediaUsedMax: 2200, altaNewMin: 2600, altaNewMax: 2900, altaUsedMin: 2200, altaUsedMax: 2600, c1: 'Vivienda promovida en la capital.', c2: 'Usada suele ser más barata que la promovida nueva.', c3: 'Malvín, Pocitos. Algunos superan los 2.600 USD.', c4: 'Barrios costeros mantienen valor por ubicación.' },
+                { id: 'pty', name: 'C. de Panamá', flag: '🇵🇦', mediaNewMin: 1200, mediaNewMax: 1700, mediaUsedMin: 1000, mediaUsedMax: 1400, altaNewMin: 2000, altaNewMax: 2300, altaUsedMin: 1400, altaUsedMax: 1800, c1: 'Proyectos urbanos medios se acercan al rango alto.', c2: 'Diferencial nuevo-segunda de ~600 USD.', c3: 'Costa del Este, San Francisco. ~2.000 USD/m².', c4: 'Diferencia significativa vs nuevo.' }
+            ]
+        };
+
+        let currentTab = 'overview';
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Actualizar clases de botones
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all rounded-sm text-gray-400 hover:text-white";
+            });
+            const activeBtn = document.getElementById(`btn-${tabName}`);
+            if(activeBtn) activeBtn.className = "nav-btn px-6 py-2 text-xs font-bold uppercase tracking-wider transition-all rounded-sm bg-[#BEAF87] text-[#212121] shadow-md";
+
+            renderContent();
+        }
+
+        function viewCity(cityId) {
+            const city = data.cities.find(c => c.id === cityId);
+            if (!city) return;
+
+            const container = document.getElementById('main-content');
+            container.innerHTML = `
+                <div class="animate-in">
+                    <button onclick="switchTab('overview')" class="mb-6 flex items-center text-slate-500 hover:text-[#BEAF87] transition-colors font-medium text-sm">
+                        <svg class="w-4 h-4 mr-2 transform rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg> Volver al mapa
+                    </button>
+
+                    <div class="bg-white rounded-sm shadow-xl border-t-4 border-[#BEAF87] overflow-hidden mb-8">
+                        <div class="bg-[#212121] p-8 text-white flex justify-between items-center relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-[#BEAF87] opacity-10 rounded-bl-full transform translate-x-10 -translate-y-10"></div>
+                            <div class="relative z-10">
+                                <h2 class="text-3xl font-serif flex items-center gap-3">
+                                    <span class="text-4xl shadow-sm">${city.flag}</span> <span class="tracking-wide uppercase">${city.name}</span>
+                                </h2>
+                                <p class="text-[#BEAF87] mt-2 font-medium tracking-widest text-sm uppercase">Análisis de Mercado 2025</p>
+                            </div>
+                        </div>
+
+                        <div class="p-8 grid grid-cols-1 lg:grid-cols-2 gap-10">
+                            <!-- Clase Media -->
+                            <div class="space-y-6">
+                                <h3 class="text-xl font-bold text-[#212121] pb-3 border-b border-slate-200 uppercase tracking-wide">Clase Media</h3>
+                                ${renderPriceCard("Vivienda Nueva", city.mediaNewMin, city.mediaNewMax, city.c1, "#BEAF87", "text-[#998b68]")}
+                                ${renderPriceCard("Vivienda Usada", city.mediaUsedMin, city.mediaUsedMax, city.c2, "#97999B", "text-slate-500")}
+                            </div>
+                            <!-- Clase Media Alta -->
+                            <div class="space-y-6">
+                                <h3 class="text-xl font-bold text-[#212121] pb-3 border-b border-slate-200 uppercase tracking-wide">Clase Media-Alta</h3>
+                                ${renderPriceCard("Vivienda Nueva", city.altaNewMin, city.altaNewMax, city.c3, "#BEAF87", "text-[#998b68]", true)}
+                                ${renderPriceCard("Vivienda Usada", city.altaUsedMin, city.altaUsedMax, city.c4, "#212121", "text-slate-700")}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPriceCard(type, min, max, comment, barColor, textColor, isPremium = false) {
+            const widthPercentage = (max / 4600) * 100;
+            const leftPercentage = (min / 4600) * 100;
+            return `
+                <div class="bg-slate-50 rounded-sm p-5 border-l-4 hover:shadow-lg transition-all duration-300 ${isPremium ? 'border-[#BEAF87]' : 'border-slate-300'}">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="font-bold uppercase tracking-wide text-sm ${textColor}">${type}</span>
+                        <span class="text-sm font-bold px-3 py-1 bg-white border border-slate-200 shadow-sm text-[#212121]">$${min} - $${max}</span>
+                    </div>
+                    <div class="relative h-3 bg-slate-200 mt-4 mb-3 w-full">
+                        <div class="absolute h-full" style="background-color: ${barColor}; left: 0; width: ${widthPercentage}%"></div>
+                        <div class="absolute top-0 bottom-0 border-l-2 border-white opacity-80" style="left: ${leftPercentage}%"></div>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-serif italic">"${comment}"</p>
+                </div>
+            `;
+        }
+
+        function renderContent() {
+            const container = document.getElementById('main-content');
+            
+            if (currentTab === 'overview') {
+                let cardsHtml = data.cities.map(city => `
+                    <div onclick="viewCity('${city.id}')" class="bg-white p-6 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer group border-t-4 border-transparent hover:border-[#BEAF87]">
+                        <div class="flex justify-between items-start mb-6">
+                            <span class="text-5xl drop-shadow-sm">${city.flag}</span>
+                            <div class="w-10 h-10 bg-[#212121] flex items-center justify-center group-hover:bg-[#BEAF87] transition-colors shadow-md">
+                                <svg class="w-5 h-5 text-[#BEAF87] group-hover:text-[#212121]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-bold text-[#212121] mb-2 font-serif">${city.name}</h3>
+                        <div class="w-full h-px bg-slate-100 my-4 group-hover:bg-[#BEAF87] transition-colors"></div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-sm items-center">
+                                <span class="text-slate-400 font-medium uppercase text-xs">Media (Nuevo)</span>
+                                <span class="font-bold text-[#212121] bg-slate-100 px-2 py-0.5 rounded-sm group-hover:bg-[#BEAF87] group-hover:text-white transition-colors">$${city.mediaNewMin} - $${city.mediaNewMax}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = `
+                    <div class="space-y-12 animate-in">
+                        <div class="text-center max-w-3xl mx-auto mb-12">
+                            <h2 class="text-4xl font-serif font-bold text-[#212121] mb-4">Informe de Mercado Latinoamericano</h2>
+                            <div class="w-24 h-1 bg-[#BEAF87] mx-auto mb-6"></div>
+                            <p class="text-slate-600 leading-relaxed">Análisis de precios de cierre (USD/m²) para modelado de proyectos inmobiliarios.</p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">${cardsHtml}</div>
+                    </div>`;
+            } 
+            
+            else if (currentTab === 'compare') {
+                let rowsHtml = data.cities.map(city => {
+                    const left = (city.mediaNewMin / 4600) * 100;
+                    const width = ((city.mediaNewMax - city.mediaNewMin) / 4600) * 100;
+                    return `
+                        <div class="flex items-center mb-4">
+                            <span class="w-8 text-2xl mr-3">${city.flag}</span>
+                            <span class="w-32 font-bold text-xs uppercase tracking-wider text-[#212121] truncate">${city.name}</span>
+                            <div class="flex-1 mx-2 relative h-6 bg-slate-100">
+                                <div class="absolute top-0 bottom-0 bg-[#BEAF87]" style="left: ${left}%; width: ${width}%"></div>
+                            </div>
+                        </div>`;
+                }).join('');
+
+                container.innerHTML = `
+                    <div class="bg-white p-8 rounded-sm shadow-lg border-t-4 border-[#BEAF87] animate-in">
+                        <h3 class="text-xl font-bold mb-8 text-[#212121] uppercase tracking-wide">Comparativa Global (Clase Media)</h3>
+                        <div class="space-y-4">${rowsHtml}</div>
+                    </div>`;
+            } 
+            
+            else if (currentTab === 'definitions') {
+                container.innerHTML = `
+                    <div class="grid md:grid-cols-2 gap-8 animate-in">
+                        <div class="bg-white p-6 shadow-sm border-l-4 border-[#BEAF87]">
+                            <h4 class="font-bold text-[#212121] uppercase text-sm">Clase Media</h4>
+                            <p class="text-sm text-slate-600 mt-2">Zonas consolidadas urbanas estables pero sin aditamentos de lujo extremo.</p>
+                        </div>
+                        <div class="bg-white p-6 shadow-sm border-l-4 border-[#BEAF87]">
+                            <h4 class="font-bold text-[#212121] uppercase text-sm">Clase Media-Alta</h4>
+                            <p class="text-sm text-slate-600 mt-2">Ubicaciones premium con alta demanda residencial y excelentes accesos.</p>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        // Carga inicial
+        renderContent();
+    </script>
+</body>
+</html>
