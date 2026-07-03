@@ -16,7 +16,7 @@ define('reportes-trimestrales:views/reportes-3-meses-2026/list-with-buttons', ['
                 {id: 'CLALlanoAndes1t', label: 'CLA Llanos Andes', icon: 'fas fa-map-marker'},
                 {id: 'CLAOrienteInsular1t', label: 'CLA Oriente Insular', icon: 'fas fa-map-marker'},
                 {id: 'CLAOrienteNorte1t', label: 'CLA Oriente Norte', icon: 'fas fa-map-marker'},
-                {id: 'CLAorienteSur1t', label: 'CLA Oriente Sur', icon: 'fas fa-map-marker'},
+                {id: 'CLAOrienteSur1t', label: 'CLA Oriente Sur', icon: 'fas fa-map-marker'},
                 {id: 'CLAZulia1t', label: 'CLA Zulia', icon: 'fas fa-map-marker'}
             ];
         },
