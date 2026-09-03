@@ -8,7 +8,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <i class="fas fa-chart-line"></i> Selecciona un Reporte 9 Meses
+                        <i class="fas fa-chart-line"></i> Selecciona un Reporte 9 Meses 2025
                     </h4>
                 </div>
                 <div class="panel-body">

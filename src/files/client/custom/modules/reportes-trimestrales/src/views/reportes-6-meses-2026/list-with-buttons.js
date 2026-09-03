@@ -1,23 +1,23 @@
-define('reportes-trimestrales:views/reportes-3-meses/list-with-buttons', ['view'], function (Dep) {
+define('reportes-trimestrales:views/reportes-6-meses-2026/list-with-buttons', ['view'], function (Dep) {
     
     return Dep.extend({
         
-        template: 'reportes-trimestrales:reportes-3-meses/list-with-buttons',
+        template: 'reportes-trimestrales:reportes-6-meses-2026/list-with-buttons',
         
         setup: function () {
-            this.headerTitle = 'Reportes 3 Meses 2025';
+            this.headerTitle = 'Reportes 6 Meses 2026';
 
             this.reportOptions = [
-                {id: 'TerritorioNacional1t', label: 'Territorio Nacional', icon: 'fas fa-map-marker'},
-                {id: 'CLACaracasLibertador1t', label: 'CLA Caracas Libertador', icon: 'fas fa-map-marker'},
-                {id: 'CLACaracasNoreste1t', label: 'CLA Caracas Noreste', icon: 'fas fa-map-marker'},
-                {id: 'CLACaracasSureste1t', label: 'CLA Caracas Sureste', icon: 'fas fa-map-marker'},
-                {id: 'CLACentroOccidente1t', label: 'CLA Centro Occidente', icon: 'fas fa-map-marker'},
-                {id: 'CLALlanoAndes1t', label: 'CLA Llanos Andes', icon: 'fas fa-map-marker'},
-                {id: 'CLAOrienteInsular1t', label: 'CLA Oriente Insular', icon: 'fas fa-map-marker'},
-                {id: 'CLAOrienteNorte1t', label: 'CLA Oriente Norte', icon: 'fas fa-map-marker'},
-                {id: 'CLAorienteSur1t', label: 'CLA Oriente Sur', icon: 'fas fa-map-marker'},
-                {id: 'CLAZulia1t', label: 'CLA Zulia', icon: 'fas fa-map-marker'}
+                {id: 'TerritorioNacional2t', label: 'Territorio Nacional', icon: 'fas fa-map-marker'},
+                {id: 'CLACaracasLibertador2t', label: 'CLA Caracas Libertador', icon: 'fas fa-map-marker'},
+                {id: 'CLACaracasNoreste2t', label: 'CLA Caracas Noreste', icon: 'fas fa-map-marker'},
+                {id: 'CLACaracasSureste2t', label: 'CLA Caracas Sureste', icon: 'fas fa-map-marker'},
+                {id: 'CLACentroOccidente2t', label: 'CLA Centro Occidente', icon: 'fas fa-map-marker'},
+                {id: 'CLALlanoAndes2t', label: 'CLA Llanos Andes', icon: 'fas fa-map-marker'},
+                {id: 'CLAOrienteInsular2t', label: 'CLA Oriente Insular', icon: 'fas fa-map-marker'},
+                {id: 'CLAOrienteNorte2t', label: 'CLA Oriente Norte', icon: 'fas fa-map-marker'},
+                {id: 'CLAOrienteSur2t', label: 'CLA Oriente Sur', icon: 'fas fa-map-marker'},
+                {id: 'CLAZulia2t', label: 'CLA Zulia', icon: 'fas fa-map-marker'}
             ];
         },
         
@@ -45,7 +45,7 @@ define('reportes-trimestrales:views/reportes-3-meses/list-with-buttons', ['view'
         showReportView: function(reportId, reportLabel) {
             console.log('Loading report:', reportId);
             
-            var reportPath = 'client/custom/modules/reportes-trimestrales/res/reports/reportes-3-meses/' + reportId + '.html';
+            var reportPath = 'client/custom/modules/reportes-trimestrales/res/reports/reportes-6-meses-2026/' + reportId + '.html';
             
             var iframeHtml = '<div class="report-header">' +
                 '<button class="btn btn-default back-to-reports" style="margin-bottom: 15px;">' +

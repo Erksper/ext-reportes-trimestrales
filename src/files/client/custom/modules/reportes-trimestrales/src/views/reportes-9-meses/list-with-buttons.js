@@ -5,7 +5,7 @@ define('reportes-trimestrales:views/reportes-9-meses/list-with-buttons', ['view'
         template: 'reportes-trimestrales:reportes-9-meses/list-with-buttons',
         
         setup: function () {
-            this.headerTitle = 'Reportes 9 Meses';
+            this.headerTitle = 'Reportes 9 Meses 2025';
 
             this.reportOptions = [
                 {id: 'TerritorioNacional3t', label: 'Territorio Nacional', icon: 'fas fa-map-marker'},
