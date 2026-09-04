@@ -1,8 +1,8 @@
 {
     "controller": "controllers/record",
     "views": {
-        "list": "reportes-trimestrales:views/reportes-3-meses-2026/list-with-buttons",
-        "detail": "reportes-trimestrales:views/reportes-3-meses-2026/list-with-buttons"
+        "list": "reportes-trimestrales:views/reportes-6-meses-2026/list-with-buttons",
+        "detail": "reportes-trimestrales:views/reportes-6-meses-2026/list-with-buttons"
     },
     "recordViews": {
         "list": "views/record/list"
